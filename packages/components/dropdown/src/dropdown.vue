@@ -89,7 +89,7 @@ export default defineComponent({
   },
   props: {
     trigger: {
-      type: String as PropType<TriggerType | 'contextmenu'>,
+      type: String as PropType<TriggerType | 'contextmenu' | 'custom'>,
       default: 'hover',
     },
     type: String as PropType<ButtonType>,
@@ -126,8 +126,12 @@ export default defineComponent({
       type: [Number, String],
       default: '',
     },
+    visibility: {
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['visible-change', 'click', 'command'],
+  emits: ['visible-change', 'click', 'command', 'update:visibility'],
   setup(props, { emit }) {
     const _instance = getCurrentInstance()
     const { ELEMENT } = useDropdown()
@@ -171,10 +175,20 @@ export default defineComponent({
 
     function handleClick() {
       if (triggerElm.value?.disabled) return
-      if (visible.value) {
-        hide()
+      if (props.trigger === 'custom') {
+        handleCustomClose()
       } else {
-        show()
+        if (visible.value) {
+          hide()
+        } else {
+          show()
+        }
+      }
+    }
+
+    function handleCustomClose() {
+      if (props.hideOnClick) {
+        emit('update:visibility', false)
       }
     }
 
@@ -185,7 +199,9 @@ export default defineComponent({
         () => {
           visible.value = true
         },
-        ['click', 'contextmenu'].includes(props.trigger) ? 0 : props.showTimeout
+        ['click', 'contextmenu', 'custom'].includes(props.trigger)
+          ? 0
+          : props.showTimeout
       )
     }
 
@@ -200,7 +216,9 @@ export default defineComponent({
         () => {
           visible.value = false
         },
-        ['click', 'contextmenu'].includes(props.trigger) ? 0 : props.hideTimeout
+        ['click', 'contextmenu', 'custom'].includes(props.trigger)
+          ? 0
+          : props.hideTimeout
       )
     }
 
@@ -262,7 +280,24 @@ export default defineComponent({
           e.preventDefault()
           handleClick()
         })
+      } else if (props.trigger === 'custom') {
+        if (props.visibility) {
+          show()
+        } else {
+          hide()
+        }
       }
+
+      watch(
+        () => props.visibility,
+        (visibility) => {
+          if (visibility) {
+            show()
+          } else {
+            hide()
+          }
+        }
+      )
 
       Object.assign(_instance, {
         handleClick,

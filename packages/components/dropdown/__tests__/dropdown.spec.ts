@@ -161,6 +161,48 @@ describe('Dropdown', () => {
     expect(content.visible).toBe(true)
   })
 
+  test('trigger custom', async () => {
+    const wrapper = _mount(
+      `
+      <el-dropdown v-model:visibility="visibility" trigger="custom" ref="b" placement="right">
+        <span class="el-dropdown-link" ref="a" @click="handleToggle">
+          dropdown<i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>Apple</el-dropdown-item>
+            <el-dropdown-item>Orange</el-dropdown-item>
+            <el-dropdown-item>Cherry</el-dropdown-item>
+            <el-dropdown-item>Peach</el-dropdown-item>
+            <el-dropdown-item>Pear</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+      `,
+      () => ({
+        visibility: false,
+      }),
+      {
+        methods: {
+          handleToggle() {
+            this.visibility = !this.visibility
+          },
+        },
+      }
+    )
+    const content = wrapper.findComponent({ ref: 'b' }).vm as any
+    const triggerElm = wrapper.find('.el-dropdown-link')
+    expect(content.visible).toBe(false)
+    await triggerElm.trigger(CLICK)
+    await sleep(TIMEOUT)
+    expect((wrapper.vm as any).visibility).toBe(true)
+    expect(content.visible).toBe(true)
+    await triggerElm.trigger(CLICK)
+    await sleep(TIMEOUT)
+    expect((wrapper.vm as any).visibility).toBe(false)
+    expect(content.visible).toBe(false)
+  })
+
   test('split button', async () => {
     const wrapper = _mount(
       `
