@@ -89,7 +89,7 @@ export default defineComponent({
   },
   props: {
     trigger: {
-      type: String as PropType<TriggerType | 'contextmenu' | 'custom'>,
+      type: String as PropType<TriggerType | 'contextmenu' | 'manual'>,
       default: 'hover',
     },
     type: String as PropType<ButtonType>,
@@ -175,8 +175,8 @@ export default defineComponent({
 
     function handleClick() {
       if (triggerElm.value?.disabled) return
-      if (props.trigger === 'custom') {
-        handleCustomClose()
+      if (props.trigger === 'manual') {
+        handleManualClose()
       } else {
         if (visible.value) {
           hide()
@@ -186,7 +186,7 @@ export default defineComponent({
       }
     }
 
-    function handleCustomClose() {
+    function handleManualClose() {
       if (props.hideOnClick) {
         emit('update:visibility', false)
       }
@@ -199,7 +199,7 @@ export default defineComponent({
         () => {
           visible.value = true
         },
-        ['click', 'contextmenu', 'custom'].includes(props.trigger)
+        ['click', 'contextmenu', 'manual'].includes(props.trigger)
           ? 0
           : props.showTimeout
       )
@@ -216,7 +216,7 @@ export default defineComponent({
         () => {
           visible.value = false
         },
-        ['click', 'contextmenu', 'custom'].includes(props.trigger)
+        ['click', 'contextmenu', 'manual'].includes(props.trigger)
           ? 0
           : props.hideTimeout
       )
@@ -280,7 +280,7 @@ export default defineComponent({
           e.preventDefault()
           handleClick()
         })
-      } else if (props.trigger === 'custom') {
+      } else if (props.trigger === 'manual') {
         if (props.visibility) {
           show()
         } else {

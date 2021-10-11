@@ -24,17 +24,17 @@ export default defineComponent({
     const size = _elDropdownSize.value
 
     function show() {
-      if (['click', 'contextmenu', 'custom'].includes(elDropdown.trigger.value))
+      if (['click', 'contextmenu', 'manual'].includes(elDropdown.trigger.value))
         return
       elDropdown.show?.()
     }
     function hide() {
-      if (['click', 'contextmenu', 'custom'].includes(elDropdown.trigger.value))
+      if (['click', 'contextmenu', 'manual'].includes(elDropdown.trigger.value))
         return
       _hide()
     }
     function _hide() {
-      if (elDropdown.trigger.value !== 'custom') {
+      if (elDropdown.trigger.value !== 'manual') {
         elDropdown.hide?.()
       }
     }
