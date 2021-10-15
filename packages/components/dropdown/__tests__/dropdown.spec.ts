@@ -161,10 +161,10 @@ describe('Dropdown', () => {
     expect(content.visible).toBe(true)
   })
 
-  test('trigger custom', async () => {
+  test('trigger manual', async () => {
     const wrapper = _mount(
       `
-      <el-dropdown v-model:visibility="visibility" trigger="custom" ref="b" placement="right">
+      <el-dropdown v-model:visibility="visibility" trigger="manual" ref="b" placement="right">
         <span class="el-dropdown-link" ref="a" @click="handleToggle">
           dropdown<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
